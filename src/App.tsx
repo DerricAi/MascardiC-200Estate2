@@ -61,10 +61,8 @@ function App() {
   const [isEngineAutoScrolling, setIsEngineAutoScrolling] = useState(true);
   const [isDimensionsAutoScrolling, setIsDimensionsAutoScrolling] = useState(true);
   const [finalSectionInView, setFinalSectionInView] = useState(false);
-  const [revealProgress, setRevealProgress] = useState(0);
 
   const finalSectionRef = useRef<HTMLElement>(null);
-  const revealContainerRef = useRef<HTMLDivElement>(null);
 
   // Hero images array
   const heroImages = [
@@ -127,25 +125,6 @@ function App() {
         const rect = finalSectionRef.current.getBoundingClientRect();
         const isInView = rect.top < window.innerHeight * 0.8 && rect.bottom > 0;
         setFinalSectionInView(isInView);
-      }
-
-      // Calculate reveal progress based on scroll position
-      if (revealContainerRef.current) {
-        const rect = revealContainerRef.current.getBoundingClientRect();
-        const containerHeight = rect.height;
-        const windowHeight = window.innerHeight;
-
-        // Start revealing when container enters viewport
-        const scrollStart = rect.top;
-        const scrollEnd = -containerHeight + windowHeight;
-
-        // Calculate progress from 0 to 1
-        let progress = 0;
-        if (scrollStart <= 0) {
-          progress = Math.min(Math.abs(scrollStart) / (Math.abs(scrollEnd - scrollStart)), 1);
-        }
-
-        setRevealProgress(progress);
       }
     };
 
@@ -900,177 +879,109 @@ Please get in touch to arrange a test drive. Thank you!`;
         </div>
       </section>
 
-      {/* Combined Sections with Reveal Effect */}
-      <div ref={revealContainerRef} className="relative" style={{ height: '200vh' }}>
-        {/* Experience Unmatched Assurance - Front Layer (slides away to reveal background) */}
-        <section
-          className="sticky top-0 h-screen py-10 md:py-20 bg-gray-900 text-white z-20 flex items-center overflow-y-auto md:overflow-hidden"
+      {/* Experience Unmatched Assurance */}
+      <section className="py-10 md:py-20 bg-gray-900 text-white">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">
+            Experience Unmatched Assurance
+          </h2>
+          <p className="text-lg md:text-xl text-gray-300 mb-6 md:mb-12">
+            We ensure your peace of mind, every step of the way
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-4 md:gap-8">
+            <div className="bg-gray-800 rounded-2xl p-6 md:p-8 hover:bg-gray-700 transition-all duration-300">
+              <Star className="h-10 md:h-12 w-10 md:w-12 text-yellow-400 mx-auto mb-3 md:mb-4" />
+              <h3 className="text-lg md:text-xl font-bold mb-2">Best Price Guarantee</h3>
+              <p className="text-sm md:text-base text-gray-300">We guarantee you the best deal in Kenya</p>
+            </div>
+
+            <div className="bg-gray-800 rounded-2xl p-6 md:p-8 hover:bg-gray-700 transition-all duration-300">
+              <Award className="h-10 md:h-12 w-10 md:w-12 text-green-400 mx-auto mb-3 md:mb-4" />
+              <h3 className="text-lg md:text-xl font-bold mb-2">Flexible Trade-In</h3>
+              <p className="text-sm md:text-base text-gray-300">Upgrade your vehicle anytime with confidence</p>
+            </div>
+
+            <div className="bg-gray-800 rounded-2xl p-6 md:p-8 hover:bg-gray-700 transition-all duration-300">
+              <Lock className="h-10 md:h-12 w-10 md:w-12 text-blue-400 mx-auto mb-3 md:mb-4" />
+              <h3 className="text-lg md:text-xl font-bold mb-2">Authorized Service</h3>
+              <p className="text-sm md:text-base text-gray-300">Benefit from professional Mercedes after-sales care</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Only One C200 Estate */}
+      <section
+        ref={finalSectionRef}
+        className="relative py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden"
+      >
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
           style={{
-            clipPath: revealProgress > 0 ? `circle(${Math.max(0, 100 - revealProgress * 100)}% at 50% 50%)` : 'none',
-            opacity: 1 - revealProgress * 0.5
+            backgroundImage: 'url(https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyXzEwA1l2VSCy4P90htrQx5LbWRoNMdvYIOJK)'
           }}
-        >
-          <div className="max-w-6xl mx-auto px-4 text-center w-full my-auto">
-            <h2
-              className="text-3xl md:text-5xl font-bold mb-3 md:mb-4"
-              style={{
-                transform: `translateY(${revealProgress * 50}px)`,
-                opacity: 1 - revealProgress
-              }}
-            >
-              Experience Unmatched Assurance
-            </h2>
-            <p
-              className="text-lg md:text-xl text-gray-300 mb-6 md:mb-12"
-              style={{
-                transform: `translateY(${revealProgress * 40}px)`,
-                opacity: 1 - revealProgress
-              }}
-            >
-              We ensure your peace of mind, every step of the way
-            </p>
+        />
 
-            <div className="grid md:grid-cols-3 gap-4 md:gap-8">
-              <div
-                className="bg-gray-800 rounded-2xl p-6 md:p-8 hover:bg-gray-700 transition-all duration-300"
-                style={{
-                  transform: `translateY(${revealProgress * 60}px) scale(${1 - revealProgress * 0.2})`,
-                  opacity: 1 - revealProgress
-                }}
-              >
-                <Star className="h-10 md:h-12 w-10 md:w-12 text-yellow-400 mx-auto mb-3 md:mb-4" />
-                <h3 className="text-lg md:text-xl font-bold mb-2">Best Price Guarantee</h3>
-                <p className="text-sm md:text-base text-gray-300">We guarantee you the best deal in Kenya</p>
-              </div>
+        {/* Gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/70" />
 
-              <div
-                className="bg-gray-800 rounded-2xl p-6 md:p-8 hover:bg-gray-700 transition-all duration-300"
-                style={{
-                  transform: `translateY(${revealProgress * 70}px) scale(${1 - revealProgress * 0.2})`,
-                  opacity: 1 - revealProgress
-                }}
-              >
-                <Award className="h-10 md:h-12 w-10 md:w-12 text-green-400 mx-auto mb-3 md:mb-4" />
-                <h3 className="text-lg md:text-xl font-bold mb-2">Flexible Trade-In</h3>
-                <p className="text-sm md:text-base text-gray-300">Upgrade your vehicle anytime with confidence</p>
-              </div>
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center py-20">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight">
+            Only One C200 Estate.
+          </h2>
 
-              <div
-                className="bg-gray-800 rounded-2xl p-6 md:p-8 hover:bg-gray-700 transition-all duration-300"
-                style={{
-                  transform: `translateY(${revealProgress * 80}px) scale(${1 - revealProgress * 0.2})`,
-                  opacity: 1 - revealProgress
-                }}
-              >
-                <Lock className="h-10 md:h-12 w-10 md:w-12 text-blue-400 mx-auto mb-3 md:mb-4" />
-                <h3 className="text-lg md:text-xl font-bold mb-2">Authorized Service</h3>
-                <p className="text-sm md:text-base text-gray-300">Benefit from professional Mercedes after-sales care</p>
-              </div>
-            </div>
-          </div>
-        </section>
+          <p className="text-xl sm:text-2xl md:text-3xl text-gray-200 mb-12 font-light">
+            When it's gone, it's gone.
+          </p>
 
-        {/* Only One C200 Estate - Background Layer (revealed from behind) */}
-        <section
-          ref={finalSectionRef}
-          className="sticky top-0 h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden flex items-center justify-center"
-        >
-          {/* Background Image - Enhanced Visibility */}
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: 'url(https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyXzEwA1l2VSCy4P90htrQx5LbWRoNMdvYIOJK)',
-              opacity: 0.5 + revealProgress * 0.2,
-              transform: `scale(${1 + revealProgress * 0.05})`
-            }}
-          />
-
-          {/* Subtle gradient overlay for text readability */}
-          <div
-            className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/70"
-            style={{
-              opacity: 0.6 + revealProgress * 0.2
-            }}
-          />
-
-          <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-            {/* Main headline */}
-            <h2
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight"
-              style={{
-                transform: `scale(${0.8 + revealProgress * 0.2})`,
-                opacity: Math.min(revealProgress * 1.5, 1)
-              }}
-            >
-              Only One C200 Estate.
-            </h2>
-
-            {/* Urgency message */}
-            <p
-              className="text-xl sm:text-2xl md:text-3xl text-gray-200 mb-12 font-light"
-              style={{
-                opacity: Math.max(0, revealProgress * 1.5 - 0.3)
-              }}
-            >
-              When it's gone, it's gone.
-            </p>
-
-            {/* CTA Button */}
-            <button
-              onClick={() => setShowContactModal(true)}
-              className="inline-flex items-center px-5 py-2.5 bg-cyan-500 hover:bg-cyan-600 text-black font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-xl text-sm uppercase tracking-wide"
-              style={{
-                transform: `scale(${0.9 + Math.min(revealProgress * 1.5, 1) * 0.15})`,
-                opacity: Math.max(0, revealProgress * 2 - 0.8),
-                animation: revealProgress > 0.8 ? 'bounce 2s infinite' : 'none'
-              }}
-            >
-              <CircleDot className="mr-2 h-5 w-5 text-cyan-500" style={{ fill: 'currentColor', stroke: 'black', strokeWidth: 2 }} />
-              Schedule a Drive Today
-            </button>
-          </div>
-
-          {/* Google Map - Lower Left Corner */}
-          <a
-            href="https://maps.app.goo.gl/p68Vwajdv1MUhe4t7"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="absolute bottom-4 left-4 md:bottom-6 md:left-6 z-20 rounded-lg overflow-hidden shadow-2xl border-2 border-cyan-400/60 hover:scale-110 hover:border-cyan-400 transition-all duration-300 block group"
-            style={{
-              opacity: Math.max(0, revealProgress * 1.5 - 0.3)
-            }}
+          <button
+            onClick={() => setShowContactModal(true)}
+            className="inline-flex items-center px-5 py-2.5 bg-cyan-500 hover:bg-cyan-600 text-black font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-xl text-sm uppercase tracking-wide"
           >
-            <div className="relative">
-              <img
-                src="https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCycW0jPdVcF9xWCLpR3NATGKZY6OksI4qharBM"
-                alt="Map to showroom"
-                width="140"
-                height="105"
-                loading="lazy"
-                decoding="async"
-                className="object-cover"
-                style={{ border: 0 }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 to-transparent pointer-events-none">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1.5">
-                    <Navigation className="h-4 w-4 text-cyan-400 flex-shrink-0" />
-                    <div className="text-left">
-                      <p className="text-white font-semibold text-xs leading-tight">Visit Showroom</p>
-                      <p className="text-gray-300 text-[10px] leading-tight">291 Kabete Ln</p>
-                    </div>
+            <CircleDot className="mr-2 h-5 w-5 text-cyan-500" style={{ fill: 'currentColor', stroke: 'black', strokeWidth: 2 }} />
+            Schedule a Drive Today
+          </button>
+        </div>
+
+        {/* Google Map - Lower Left Corner */}
+        <a
+          href="https://maps.app.goo.gl/p68Vwajdv1MUhe4t7"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-4 left-4 md:bottom-6 md:left-6 z-20 rounded-lg overflow-hidden shadow-2xl border-2 border-cyan-400/60 hover:scale-110 hover:border-cyan-400 transition-all duration-300 block group"
+        >
+          <div className="relative">
+            <img
+              src="https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCycW0jPdVcF9xWCLpR3NATGKZY6OksI4qharBM"
+              alt="Map to showroom"
+              width="140"
+              height="105"
+              loading="lazy"
+              decoding="async"
+              className="object-cover"
+              style={{ border: 0 }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 to-transparent pointer-events-none">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-1.5">
+                  <Navigation className="h-4 w-4 text-cyan-400 flex-shrink-0" />
+                  <div className="text-left">
+                    <p className="text-white font-semibold text-xs leading-tight">Visit Showroom</p>
+                    <p className="text-gray-300 text-[10px] leading-tight">291 Kabete Ln</p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-cyan-400 flex-shrink-0 group-hover:translate-x-1 transition-transform duration-300" />
                 </div>
-              </div>
-              <div className="absolute top-1.5 right-1.5 bg-cyan-500 text-black text-[10px] font-bold px-1.5 py-0.5 rounded shadow-lg pointer-events-none animate-pulse">
-                DIRECTIONS
+                <ChevronRight className="h-4 w-4 text-cyan-400 flex-shrink-0 group-hover:translate-x-1 transition-transform duration-300" />
               </div>
             </div>
-          </a>
-        </section>
-      </div>
+            <div className="absolute top-1.5 right-1.5 bg-cyan-500 text-black text-[10px] font-bold px-1.5 py-0.5 rounded shadow-lg pointer-events-none animate-pulse">
+              DIRECTIONS
+            </div>
+          </div>
+        </a>
+      </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8">
