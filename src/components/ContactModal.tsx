@@ -1,5 +1,5 @@
-import React from 'react';
-import { X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Users } from 'lucide-react';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -24,6 +24,37 @@ const ContactModal: React.FC<ContactModalProps> = ({
   handleInputChange,
   handleWhatsAppSubmit,
 }) => {
+  const [viewerCount, setViewerCount] = useState<number | null>(null);
+  const [showViewers, setShowViewers] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setShowViewers(false);
+      setViewerCount(null);
+      return;
+    }
+
+    const initialDelay = setTimeout(() => {
+      const randomCount = Math.floor(Math.random() * 11) + 10;
+      setViewerCount(randomCount);
+      setShowViewers(true);
+    }, 3000);
+
+    const updateInterval = setInterval(() => {
+      setViewerCount(prev => {
+        if (prev === null) return null;
+        const change = Math.random() > 0.5 ? 1 : -1;
+        const newCount = prev + change;
+        return Math.max(10, Math.min(20, newCount));
+      });
+    }, 15000);
+
+    return () => {
+      clearTimeout(initialDelay);
+      clearInterval(updateInterval);
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const getAvailableHours = (day: string): string[] => {
@@ -48,15 +79,25 @@ const ContactModal: React.FC<ContactModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
-          <h2 className="text-2xl font-bold text-gray-900">Book Your Test Drive</h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
-            aria-label="Close modal"
-          >
-            <X className="h-6 w-6 text-gray-600" />
-          </button>
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-2xl font-bold text-gray-900">Book Your Test Drive</h2>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              aria-label="Close modal"
+            >
+              <X className="h-6 w-6 text-gray-600" />
+            </button>
+          </div>
+
+          {showViewers && viewerCount !== null && (
+            <div className="flex items-center gap-2 text-sm text-gray-600 animate-fade-in">
+              <Users className="h-4 w-4 text-cyan-600" />
+              <span className="font-medium text-cyan-600">{viewerCount}</span>
+              <span>people viewing this form right now</span>
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleWhatsAppSubmit} className="p-6 space-y-6">
