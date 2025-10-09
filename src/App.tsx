@@ -879,11 +879,11 @@ Please get in touch to arrange a test drive. Thank you!`;
         </div>
       </section>
 
-      {/* Experience Unmatched Assurance */}
+      {/* Assurance */}
       <section className="py-10 md:py-20 bg-gray-900 text-white">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">
-            Experience Unmatched Assurance
+            Assurance
           </h2>
           <p className="text-lg md:text-xl text-gray-300 mb-6 md:mb-12">
             We ensure your peace of mind, every step of the way
