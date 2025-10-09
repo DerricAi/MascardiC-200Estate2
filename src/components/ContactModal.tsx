@@ -12,7 +12,6 @@ interface ContactModalProps {
     timeline: string;
     preferredDay: string;
     preferredTime: string;
-    privacyAccepted: boolean;
   };
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   handleWhatsAppSubmit: (e: React.FormEvent) => void;
@@ -26,6 +25,25 @@ const ContactModal: React.FC<ContactModalProps> = ({
   handleWhatsAppSubmit,
 }) => {
   if (!isOpen) return null;
+
+  const getAvailableHours = (day: string): string[] => {
+    if (!day) return [];
+
+    const date = new Date(day);
+    const dayOfWeek = date.getDay();
+
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+      return ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM'];
+    } else if (dayOfWeek === 6) {
+      return ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
+    } else if (dayOfWeek === 0) {
+      return ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM'];
+    }
+
+    return [];
+  };
+
+  const availableHours = getAvailableHours(formData.preferredDay);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
@@ -116,13 +134,19 @@ const ContactModal: React.FC<ContactModalProps> = ({
                 name="preferredTime"
                 value={formData.preferredTime}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
+                disabled={!formData.preferredDay}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200 disabled:bg-gray-100 disabled:cursor-not-allowed"
               >
                 <option value="">Select a time</option>
-                <option value="morning">Morning (9am - 12pm)</option>
-                <option value="afternoon">Afternoon (12pm - 3pm)</option>
-                <option value="evening">Evening (3pm - 6pm)</option>
+                {availableHours.map((hour) => (
+                  <option key={hour} value={hour}>
+                    {hour}
+                  </option>
+                ))}
               </select>
+              {!formData.preferredDay && (
+                <p className="text-xs text-gray-500 mt-1">Please select a day first</p>
+              )}
             </div>
           </div>
 
@@ -137,27 +161,10 @@ const ContactModal: React.FC<ContactModalProps> = ({
               onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
             >
-              <option value="this-week">This Week</option>
               <option value="this-month">This Month</option>
-              <option value="next-month">Next Month</option>
-              <option value="just-browsing">Just Browsing</option>
+              <option value="within-3-months">Within 3 months</option>
+              <option value="this-year">This Year</option>
             </select>
-          </div>
-
-          <div className="flex items-start">
-            <input
-              type="checkbox"
-              id="privacyAccepted"
-              name="privacyAccepted"
-              checked={formData.privacyAccepted}
-              onChange={handleInputChange}
-              required
-              className="mt-1 h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
-            />
-            <label htmlFor="privacyAccepted" className="ml-3 text-sm text-gray-600">
-              I agree to be contacted by Mascardi regarding this test drive request and understand my
-              information will be handled according to their privacy policy. *
-            </label>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
