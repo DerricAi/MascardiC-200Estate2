@@ -20,6 +20,7 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
   const [initialScale, setInitialScale] = useState(1);
   const [pinchCenter, setPinchCenter] = useState<{ x: number; y: number } | null>(null);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
+  const [isInteracting, setIsInteracting] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -93,6 +94,7 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
   const handleMouseDown = (e: React.MouseEvent) => {
     if (scale > 1) {
       setIsDragging(true);
+      setIsInteracting(true);
       setDragStart({
         x: e.clientX - position.x,
         y: e.clientY - position.y
@@ -111,6 +113,7 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    setIsInteracting(false);
   };
 
   const getTouchDistance = (touches: React.TouchList) => {
@@ -129,6 +132,7 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
       e.preventDefault();
+      setIsInteracting(true);
       const distance = getTouchDistance(e.touches);
       const center = getTouchCenter(e.touches);
       setInitialPinchDistance(distance);
@@ -136,6 +140,7 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
       setPinchCenter(center);
       setInitialPosition(position);
     } else if (e.touches.length === 1 && scale > 1) {
+      setIsInteracting(true);
       setTouchStart({
         x: e.touches[0].clientX - position.x,
         y: e.touches[0].clientY - position.y
@@ -180,6 +185,7 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
       setInitialPinchDistance(null);
       setPinchCenter(null);
       setTouchStart(null);
+      setIsInteracting(false);
     } else if (e.touches.length === 1) {
       setInitialPinchDistance(null);
       setPinchCenter(null);
@@ -314,10 +320,16 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
         <img
           src={images[currentIndex]}
           alt={`Highlight ${currentIndex + 1}`}
-          className="max-w-full max-h-[90vh] object-contain transition-transform duration-300 select-none"
+          className="max-w-full max-h-[90vh] object-contain select-none"
           style={{
             transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
-            transformOrigin: 'center center'
+            transformOrigin: 'center center',
+            transition: isInteracting ? 'none' : 'transform 0.1s ease-out',
+            willChange: 'transform',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            perspective: 1000,
+            WebkitPerspective: 1000
           }}
           draggable={false}
         />
