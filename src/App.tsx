@@ -35,6 +35,7 @@ function App() {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showImageZoom, setShowImageZoom] = useState(false);
   const [zoomImageIndex, setZoomImageIndex] = useState(0);
+  const [zoomImageSource, setZoomImageSource] = useState<'highlights' | 'gallery'>('highlights');
   
   const heroRef = useRef<HTMLElement>(null);
   const powerSectionRef = useRef<HTMLElement>(null);
@@ -64,8 +65,10 @@ function App() {
   const [isEngineAutoScrolling, setIsEngineAutoScrolling] = useState(true);
   const [isDimensionsAutoScrolling, setIsDimensionsAutoScrolling] = useState(true);
   const [finalSectionInView, setFinalSectionInView] = useState(false);
+  const [gallerySectionInView, setGallerySectionInView] = useState(false);
 
   const finalSectionRef = useRef<HTMLElement>(null);
+  const gallerySectionRef = useRef<HTMLElement>(null);
 
   // Hero images array
   const heroImages = [
@@ -128,6 +131,13 @@ function App() {
         const rect = finalSectionRef.current.getBoundingClientRect();
         const isInView = rect.top < window.innerHeight * 0.8 && rect.bottom > 0;
         setFinalSectionInView(isInView);
+      }
+
+      // Check if gallery section is in view
+      if (gallerySectionRef.current) {
+        const rect = gallerySectionRef.current.getBoundingClientRect();
+        const isInView = rect.top < window.innerHeight * 0.8 && rect.bottom > 0;
+        setGallerySectionInView(isInView);
       }
     };
 
@@ -258,7 +268,27 @@ function App() {
 
   const highlightImages = highlights.filter(h => h.backgroundImage).map(h => h.backgroundImage!);
 
+  const galleryImages = [
+    'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCygnxBlTLXdh0cWjDG7FBLioQT2qwZVnPplbMK',
+    'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCywxMZDWAsdopRb28vfUBiO1twDTMSFe5uQZHL',
+    'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCy6KkjsUoWcCgmQDPAMwsqZjbhynfYJra4dzHu',
+    'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyO7ueM3TsmDv6LdQMo2Pr1xcUyFl0fEegzKWZ',
+    'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyZy3l4ygcPf12FIUSlEgRpQqjYm4nV9CzO5ey',
+    'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyObHqvQ3TsmDv6LdQMo2Pr1xcUyFl0fEegzKW',
+    'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCySGPzRa2Dusoyp2d5ehfAHU9mnkcMKIl3SRBJ',
+    'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyN6PULQkNw9YGlOLgurRIokz8s1pZU4TDbfSj',
+    'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyHRWCLwx48Bsix7DaCNpo0j2AyblGzvXOk3n5',
+    'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyEaVppEhwh8g0tyHzRP9sZaTv2ubB3c1VeAfj'
+  ];
+
   const handleHighlightClick = (index: number) => {
+    setZoomImageSource('highlights');
+    setZoomImageIndex(index);
+    setShowImageZoom(true);
+  };
+
+  const handleGalleryImageClick = (index: number) => {
+    setZoomImageSource('gallery');
     setZoomImageIndex(index);
     setShowImageZoom(true);
   };
@@ -270,6 +300,7 @@ function App() {
       ...heroImages,
       ...athleticImages,
       ...highlights.filter(h => h.backgroundImage).map(h => h.backgroundImage!),
+      ...galleryImages,
       'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyE4qs7c8hwh8g0tyHzRP9sZaTv2ubB3c1VeAf', // Mascardi logo
       'https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyZy3l4ygcPf12FIUSlEgRpQqjYm4nV9CzO5ey', // Dimensions background
       'https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop', // Athletic section background
@@ -828,6 +859,38 @@ Please get in touch to arrange a test drive. Thank you!`;
         </div>
       </section>
 
+      {/* Gallery Section */}
+      <section ref={gallerySectionRef} className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {galleryImages.map((imageUrl, index) => (
+              <div
+                key={index}
+                onClick={() => handleGalleryImageClick(index)}
+                className={`relative rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 ease-out cursor-pointer group aspect-[4/3] ${
+                  gallerySectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}
+                style={{ transitionDelay: `${index * 0.1}s` }}
+              >
+                <img
+                  src={imageUrl}
+                  alt={`Mercedes C200 Estate view ${index + 1}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 ease-out"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
+                <div className="absolute bottom-2 right-2 bg-white/20 backdrop-blur-sm rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                  </svg>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Dimensions & Capacity Specifications */}
       <section ref={dimensionsSectionRef} className={`relative py-20 overflow-hidden transition-all duration-1000 ease-out ${
         dimensionsSectionInView ? 'opacity-100' : 'opacity-0'
@@ -1022,7 +1085,7 @@ Please get in touch to arrange a test drive. Thank you!`;
       <ImageZoomModal
         isOpen={showImageZoom}
         onClose={() => setShowImageZoom(false)}
-        images={highlightImages}
+        images={zoomImageSource === 'highlights' ? highlightImages : galleryImages}
         initialIndex={zoomImageIndex}
       />
 
