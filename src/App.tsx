@@ -623,74 +623,6 @@ Please get in touch to arrange a test drive. Thank you!`;
         </div>
       </section>
 
-      {/* Dimensions & Capacity Specifications */}
-      <section ref={dimensionsSectionRef} className={`relative py-20 overflow-hidden transition-all duration-1000 ease-out ${
-        dimensionsSectionInView ? 'opacity-100' : 'opacity-0'
-      }`}>
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: 'url(https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyZy3l4ygcPf12FIUSlEgRpQqjYm4nV9CzO5ey)'
-          }}
-        />
-        {/* Overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/75 to-gray-50/80" />
-
-        <div className="relative z-10 max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
-              Dimensions & Capacity
-            </h3>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Spacious design crafted for comfort and versatility
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            <div className="bg-white rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Car className="h-8 w-8 text-blue-600" />
-              </div>
-              <h4 className="text-lg font-bold text-gray-900 mb-3 tracking-tight">Body Style</h4>
-              <p className="text-gray-900 text-base font-semibold mb-1">Estate Wagon</p>
-              <p className="text-gray-600 text-sm">S205 Series</p>
-              <p className="text-blue-600 text-xs font-medium mt-2">Premium Build Quality</p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Settings className="h-8 w-8 text-green-600" />
-              </div>
-              <h4 className="text-lg font-bold text-gray-900 mb-3 tracking-tight">External Dimensions</h4>
-              <p className="text-gray-900 text-sm font-semibold mb-1">L: 4,702 mm × W: 1,810 mm</p>
-              <p className="text-gray-900 text-sm font-semibold">H: 1,457 mm</p>
-              <p className="text-green-600 text-xs font-medium mt-2">Refined Proportions</p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Settings className="h-8 w-8 text-orange-600" />
-              </div>
-              <h4 className="text-lg font-bold text-gray-900 mb-3 tracking-tight">Wheelbase & Weight</h4>
-              <p className="text-gray-900 text-base font-semibold mb-1">2,840 mm</p>
-              <p className="text-gray-600 text-sm">Extended Wheelbase</p>
-              <p className="text-orange-600 text-xs font-medium mt-2">1,565 kg Kerb Weight</p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Car className="h-8 w-8 text-purple-600" />
-              </div>
-              <h4 className="text-lg font-bold text-gray-900 mb-3 tracking-tight">Seating & Cargo</h4>
-              <p className="text-gray-900 text-base font-semibold mb-1">5 Passengers</p>
-              <p className="text-gray-600 text-sm">Full Seating</p>
-              <p className="text-purple-600 text-xs font-medium mt-2">490-1,510 L Boot Space</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Review Section Title */}
       <section className="py-20 text-white relative overflow-hidden" style={{ background: 'linear-gradient(to bottom, #0a2e75, #000000)' }}>
         <div className="max-w-6xl mx-auto px-4 text-center">
@@ -891,6 +823,74 @@ Please get in touch to arrange a test drive. Thank you!`;
                   aria-label={`Go to highlight ${index + 1}`}
                 />
               ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Dimensions & Capacity Specifications */}
+      <section ref={dimensionsSectionRef} className={`relative py-20 overflow-hidden transition-all duration-1000 ease-out ${
+        dimensionsSectionInView ? 'opacity-100' : 'opacity-0'
+      }`}>
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url(https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCyZy3l4ygcPf12FIUSlEgRpQqjYm4nV9CzO5ey)'
+          }}
+        />
+        {/* Overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/75 to-gray-50/80" />
+
+        <div className="relative z-10 max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+              Dimensions & Capacity
+            </h3>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Spacious design crafted for comfort and versatility
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            <div className="bg-white rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Car className="h-8 w-8 text-blue-600" />
+              </div>
+              <h4 className="text-lg font-bold text-gray-900 mb-3 tracking-tight">Body Style</h4>
+              <p className="text-gray-900 text-base font-semibold mb-1">Estate Wagon</p>
+              <p className="text-gray-600 text-sm">S205 Series</p>
+              <p className="text-blue-600 text-xs font-medium mt-2">Premium Build Quality</p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Settings className="h-8 w-8 text-green-600" />
+              </div>
+              <h4 className="text-lg font-bold text-gray-900 mb-3 tracking-tight">External Dimensions</h4>
+              <p className="text-gray-900 text-sm font-semibold mb-1">L: 4,702 mm × W: 1,810 mm</p>
+              <p className="text-gray-900 text-sm font-semibold">H: 1,457 mm</p>
+              <p className="text-green-600 text-xs font-medium mt-2">Refined Proportions</p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Settings className="h-8 w-8 text-orange-600" />
+              </div>
+              <h4 className="text-lg font-bold text-gray-900 mb-3 tracking-tight">Wheelbase & Weight</h4>
+              <p className="text-gray-900 text-base font-semibold mb-1">2,840 mm</p>
+              <p className="text-gray-600 text-sm">Extended Wheelbase</p>
+              <p className="text-orange-600 text-xs font-medium mt-2">1,565 kg Kerb Weight</p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Car className="h-8 w-8 text-purple-600" />
+              </div>
+              <h4 className="text-lg font-bold text-gray-900 mb-3 tracking-tight">Seating & Cargo</h4>
+              <p className="text-gray-900 text-base font-semibold mb-1">5 Passengers</p>
+              <p className="text-gray-600 text-sm">Full Seating</p>
+              <p className="text-purple-600 text-xs font-medium mt-2">490-1,510 L Boot Space</p>
             </div>
           </div>
         </div>
