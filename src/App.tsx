@@ -562,6 +562,67 @@ Please get in touch to arrange a test drive. Thank you!`;
         </div>
       </section>
 
+      {/* Lifestyle Copy Section */}
+      <section ref={athleticSectionRef} className="relative py-20 bg-gray-900 text-white overflow-hidden">
+        {/* Parallax Background */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
+          style={{
+            backgroundImage: 'url(https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop)',
+            transform: `translateY(${scrollY * 0.2}px)`
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-black/60" />
+        
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6 text-center md:text-left">
+              <h2 className={`text-3xl md:text-4xl font-bold leading-tight transition-all duration-1000 ease-out ${
+                athleticSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+              }`}>
+                Athletic Performance Meets Spacious Versatility
+              </h2>
+              <p className={`text-lg text-gray-200 leading-relaxed transition-all duration-1000 ease-out ${
+                athleticSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`} style={{ transitionDelay: '0.3s' }}>
+                Command the road with athletic precision, then effortlessly accommodate life's demands with generous space. The C200 Estate is engineered for both your professional drive and family getaways.
+              </p>
+              <button
+                onClick={() => setShowContactModal(true)}
+                className={`inline-flex items-center px-6 py-3 bg-cyan-500 text-black font-semibold rounded-lg hover:bg-cyan-600 transition-all duration-1000 ease-out animate-bounce-slow ${
+                  athleticSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}
+                style={{ transitionDelay: '0.6s' }}
+              >
+                Reserve Your Test Drive Today
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </button>
+            </div>
+            <div className={`relative transition-all duration-1000 ease-out ${
+              athleticSectionInView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+            }`} style={{ transitionDelay: '1s' }}>
+              <div className="relative rounded-2xl shadow-2xl w-full h-96 border-4 border-white/20 overflow-hidden">
+                {athleticImages.map((imageUrl, index) => (
+                  <img
+                    key={index}
+                    src={imageUrl}
+                    alt={`Mercedes C200 Estate ${index + 1}`}
+                    fetchPriority="high"
+                    loading="eager"
+                    decoding="async"
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                      index === currentAthleticImageIndex ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{ willChange: 'opacity' }}
+                  />
+                ))}
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-2xl" />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Dimensions & Capacity Specifications */}
       <section ref={dimensionsSectionRef} className={`relative py-20 overflow-hidden transition-all duration-1000 ease-out ${
         dimensionsSectionInView ? 'opacity-100' : 'opacity-0'
@@ -625,67 +686,6 @@ Please get in touch to arrange a test drive. Thank you!`;
               <p className="text-gray-900 text-base font-semibold mb-1">5 Passengers</p>
               <p className="text-gray-600 text-sm">Full Seating</p>
               <p className="text-purple-600 text-xs font-medium mt-2">490-1,510 L Boot Space</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Lifestyle Copy Section */}
-      <section ref={athleticSectionRef} className="relative py-20 bg-gray-900 text-white overflow-hidden">
-        {/* Parallax Background */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
-          style={{
-            backgroundImage: 'url(https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop)',
-            transform: `translateY(${scrollY * 0.2}px)`
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-black/60" />
-        
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6 text-center md:text-left">
-              <h2 className={`text-3xl md:text-4xl font-bold leading-tight transition-all duration-1000 ease-out ${
-                athleticSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-              }`}>
-                Athletic Performance Meets Spacious Versatility
-              </h2>
-              <p className={`text-lg text-gray-200 leading-relaxed transition-all duration-1000 ease-out ${
-                athleticSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`} style={{ transitionDelay: '0.3s' }}>
-                Command the road with athletic precision, then effortlessly accommodate life's demands with generous space. The C200 Estate is engineered for both your professional drive and family getaways.
-              </p>
-              <button
-                onClick={() => setShowContactModal(true)}
-                className={`inline-flex items-center px-6 py-3 bg-cyan-500 text-black font-semibold rounded-lg hover:bg-cyan-600 transition-all duration-1000 ease-out animate-bounce-slow ${
-                  athleticSectionInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                }`}
-                style={{ transitionDelay: '0.6s' }}
-              >
-                Reserve Your Test Drive Today
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </button>
-            </div>
-            <div className={`relative transition-all duration-1000 ease-out ${
-              athleticSectionInView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-            }`} style={{ transitionDelay: '1s' }}>
-              <div className="relative rounded-2xl shadow-2xl w-full h-96 border-4 border-white/20 overflow-hidden">
-                {athleticImages.map((imageUrl, index) => (
-                  <img
-                    key={index}
-                    src={imageUrl}
-                    alt={`Mercedes C200 Estate ${index + 1}`}
-                    fetchPriority="high"
-                    loading="eager"
-                    decoding="async"
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-                      index === currentAthleticImageIndex ? 'opacity-100' : 'opacity-0'
-                    }`}
-                    style={{ willChange: 'opacity' }}
-                  />
-                ))}
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-2xl" />
             </div>
           </div>
         </div>
