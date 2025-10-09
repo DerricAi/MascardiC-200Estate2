@@ -772,14 +772,14 @@ Please get in touch to arrange a test drive. Thank you!`;
               {/* Previous Button */}
               <button
                 onClick={prevSlide}
-                className="absolute left-0 md:left-4 z-10 p-2 md:p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-gray-50"
+                className="absolute left-4 md:left-8 z-20 p-2 md:p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-gray-50"
                 aria-label="Previous highlight"
               >
                 <ChevronLeft className="h-5 w-5 md:h-6 md:w-6 text-gray-600" />
               </button>
 
               {/* Current Slide */}
-              <div className="w-full max-w-5xl mx-8 md:mx-20">
+              <div className="w-full max-w-5xl mx-16 md:mx-24">
                 <div
                   onClick={() => handleHighlightClick(currentSlide)}
                   className="rounded-2xl md:rounded-3xl p-6 md:p-12 hover:shadow-xl transition-all duration-300 relative overflow-hidden min-h-[400px] md:min-h-[500px] flex items-center cursor-pointer group"
@@ -833,7 +833,7 @@ Please get in touch to arrange a test drive. Thank you!`;
               {/* Next Button */}
               <button
                 onClick={nextSlide}
-                className="absolute right-0 md:right-4 z-10 p-2 md:p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-gray-50"
+                className="absolute right-4 md:right-8 z-20 p-2 md:p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-gray-50"
                 aria-label="Next highlight"
               >
                 <ChevronRight className="h-5 w-5 md:h-6 md:w-6 text-gray-600" />
