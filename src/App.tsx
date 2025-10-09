@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ContactModal from './components/ContactModal';
+import ImageZoomModal from './components/ImageZoomModal';
 import {
   Car,
   Phone,
@@ -32,6 +33,8 @@ function App() {
   
   // Modal state
   const [showContactModal, setShowContactModal] = useState(false);
+  const [showImageZoom, setShowImageZoom] = useState(false);
+  const [zoomImageIndex, setZoomImageIndex] = useState(0);
   
   const heroRef = useRef<HTMLElement>(null);
   const powerSectionRef = useRef<HTMLElement>(null);
@@ -252,6 +255,13 @@ function App() {
       backgroundImage: "https://hxu4soai4e.ufs.sh/f/Xjw32Tl2VSCynDP5SFBT3C2GjsZQ5UNiId7bxmAV6tyEHJgv"
     }
   ];
+
+  const highlightImages = highlights.filter(h => h.backgroundImage).map(h => h.backgroundImage!);
+
+  const handleHighlightClick = (index: number) => {
+    setZoomImageIndex(index);
+    setShowImageZoom(true);
+  };
 
   // Preload ALL images aggressively for instant display
   useEffect(() => {
@@ -808,7 +818,8 @@ Please get in touch to arrange a test drive. Thank you!`;
               {/* Current Slide */}
               <div className="w-full max-w-5xl mx-8 md:mx-20">
                 <div
-                  className="rounded-2xl md:rounded-3xl p-6 md:p-12 hover:shadow-xl transition-all duration-300 relative overflow-hidden min-h-[400px] md:min-h-[500px] flex items-center"
+                  onClick={() => handleHighlightClick(currentSlide)}
+                  className="rounded-2xl md:rounded-3xl p-6 md:p-12 hover:shadow-xl transition-all duration-300 relative overflow-hidden min-h-[400px] md:min-h-[500px] flex items-center cursor-pointer group"
                   style={{
                     backgroundColor: highlights[currentSlide].backgroundImage ? 'transparent' : '#f9fafb',
                     backgroundImage: highlights[currentSlide].backgroundImage ? `url(${highlights[currentSlide].backgroundImage})` : 'none',
@@ -820,7 +831,7 @@ Please get in touch to arrange a test drive. Thank you!`;
                 >
                   {/* Overlay for text readability */}
                   {highlights[currentSlide].backgroundImage && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/30 rounded-2xl md:rounded-3xl" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/30 rounded-2xl md:rounded-3xl group-hover:from-black/40 group-hover:via-black/30 group-hover:to-black/20 transition-all duration-300" />
                   )}
 
                   <div className="relative z-10 w-full">
@@ -846,6 +857,12 @@ Please get in touch to arrange a test drive. Thank you!`;
                     }`}>
                       "{highlights[currentSlide].quote}"
                     </p>
+                  </div>
+
+                  <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    </svg>
                   </div>
                 </div>
               </div>
@@ -999,6 +1016,14 @@ Please get in touch to arrange a test drive. Thank you!`;
         formData={formData}
         handleInputChange={handleInputChange}
         handleWhatsAppSubmit={handleWhatsAppSubmit}
+      />
+
+      {/* Image Zoom Modal */}
+      <ImageZoomModal
+        isOpen={showImageZoom}
+        onClose={() => setShowImageZoom(false)}
+        images={highlightImages}
+        initialIndex={zoomImageIndex}
       />
 
       {/* WhatsApp Chat Widget */}

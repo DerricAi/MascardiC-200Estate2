@@ -37,6 +37,10 @@
     animation: bounce-slow 2s ease-in-out infinite;
     animation-delay: 0.2s;
   }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
 }
 
 @keyframes fadeInUp {
@@ -78,6 +82,15 @@
   }
   50% {
     transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
