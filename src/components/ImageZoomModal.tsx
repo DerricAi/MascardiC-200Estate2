@@ -18,6 +18,8 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
   const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
   const [initialPinchDistance, setInitialPinchDistance] = useState<number | null>(null);
   const [initialScale, setInitialScale] = useState(1);
+  const [pinchCenter, setPinchCenter] = useState<{ x: number; y: number } | null>(null);
+  const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (isOpen) {
@@ -117,11 +119,27 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
     return Math.sqrt(dx * dx + dy * dy);
   };
 
+  const getTouchCenter = (touches: React.TouchList) => {
+    return {
+      x: (touches[0].clientX + touches[1].clientX) / 2,
+      y: (touches[0].clientY + touches[1].clientY) / 2
+    };
+  };
+
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
+      e.preventDefault();
       const distance = getTouchDistance(e.touches);
+      const center = getTouchCenter(e.touches);
       setInitialPinchDistance(distance);
       setInitialScale(scale);
+      setPinchCenter(center);
+      setInitialPosition(position);
+    } else if (e.touches.length === 1 && scale > 1) {
+      setTouchStart({
+        x: e.touches[0].clientX - position.x,
+        y: e.touches[0].clientY - position.y
+      });
     } else if (e.touches.length === 1) {
       setTouchStart({
         x: e.touches[0].clientX,
@@ -131,13 +149,25 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2 && initialPinchDistance) {
+    if (e.touches.length === 2 && initialPinchDistance && pinchCenter) {
       e.preventDefault();
       const currentDistance = getTouchDistance(e.touches);
+      const currentCenter = getTouchCenter(e.touches);
       const scaleChange = currentDistance / initialPinchDistance;
       const newScale = Math.min(Math.max(initialScale * scaleChange, 0.5), 4);
+
+      const centerDeltaX = currentCenter.x - pinchCenter.x;
+      const centerDeltaY = currentCenter.y - pinchCenter.y;
+
+      const newPosition = {
+        x: initialPosition.x + centerDeltaX,
+        y: initialPosition.y + centerDeltaY
+      };
+
       setScale(newScale);
+      setPosition(newPosition);
     } else if (e.touches.length === 1 && touchStart && scale > 1) {
+      e.preventDefault();
       setPosition({
         x: e.touches[0].clientX - touchStart.x,
         y: e.touches[0].clientY - touchStart.y
@@ -148,7 +178,17 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (e.touches.length === 0) {
       setInitialPinchDistance(null);
+      setPinchCenter(null);
       setTouchStart(null);
+    } else if (e.touches.length === 1) {
+      setInitialPinchDistance(null);
+      setPinchCenter(null);
+      if (scale > 1) {
+        setTouchStart({
+          x: e.touches[0].clientX - position.x,
+          y: e.touches[0].clientY - position.y
+        });
+      }
     }
   };
 
@@ -258,7 +298,7 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
 
       <div
         ref={imageRef}
-        className={`relative max-w-[90vw] max-h-[90vh] ${scale > 1 ? 'cursor-move' : 'cursor-zoom-in'}`}
+        className={`relative max-w-[90vw] max-h-[90vh] ${scale > 1 ? 'cursor-move' : 'cursor-zoom-in'} touch-none`}
         onClick={(e) => e.stopPropagation()}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
