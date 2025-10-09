@@ -10,30 +10,58 @@ interface ImageZoomModalProps {
 
 const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images, initialIndex }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [scale, setScale] = useState(1);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const imageRef = useRef<HTMLDivElement>(null);
-  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
-  const [initialPinchDistance, setInitialPinchDistance] = useState<number | null>(null);
-  const [initialScale, setInitialScale] = useState(1);
-  const [pinchCenter, setPinchCenter] = useState<{ x: number; y: number } | null>(null);
-  const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
-  const [isInteracting, setIsInteracting] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const scaleRef = useRef(1);
+  const positionRef = useRef({ x: 0, y: 0 });
+  const isDraggingRef = useRef(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const initialPinchDistanceRef = useRef<number | null>(null);
+  const initialScaleRef = useRef(1);
+  const pinchCenterRef = useRef<{ x: number; y: number } | null>(null);
+  const initialPositionRef = useRef({ x: 0, y: 0 });
+  const rafRef = useRef<number | null>(null);
+
+  const [displayScale, setDisplayScale] = useState(1);
+
+  const updateTransform = () => {
+    if (imageRef.current) {
+      const scale = scaleRef.current;
+      const pos = positionRef.current;
+      imageRef.current.style.transform = `scale(${scale}) translate(${pos.x / scale}px, ${pos.y / scale}px)`;
+    }
+  };
+
+  const scheduleUpdate = () => {
+    if (rafRef.current === null) {
+      rafRef.current = requestAnimationFrame(() => {
+        updateTransform();
+        rafRef.current = null;
+      });
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
-      setScale(1);
-      setPosition({ x: 0, y: 0 });
+      scaleRef.current = 1;
+      positionRef.current = { x: 0, y: 0 };
+      setDisplayScale(1);
       document.body.style.overflow = 'hidden';
+      if (imageRef.current) {
+        imageRef.current.style.transform = 'scale(1) translate(0px, 0px)';
+      }
     } else {
       document.body.style.overflow = 'auto';
     }
 
     return () => {
       document.body.style.overflow = 'auto';
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
   }, [isOpen, initialIndex]);
 
@@ -66,19 +94,25 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, currentIndex, scale]);
+  }, [isOpen, currentIndex]);
 
   const handleZoomIn = () => {
-    setScale(prev => Math.min(prev + 0.5, 4));
+    scaleRef.current = Math.min(scaleRef.current + 0.5, 4);
+    setDisplayScale(scaleRef.current);
+    updateTransform();
   };
 
   const handleZoomOut = () => {
-    setScale(prev => Math.max(prev - 0.5, 0.5));
+    scaleRef.current = Math.max(scaleRef.current - 0.5, 0.5);
+    setDisplayScale(scaleRef.current);
+    updateTransform();
   };
 
   const handleReset = () => {
-    setScale(1);
-    setPosition({ x: 0, y: 0 });
+    scaleRef.current = 1;
+    positionRef.current = { x: 0, y: 0 };
+    setDisplayScale(1);
+    updateTransform();
   };
 
   const handlePrevious = () => {
@@ -92,37 +126,36 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (scale > 1) {
-      setIsDragging(true);
-      setIsInteracting(true);
-      setDragStart({
-        x: e.clientX - position.x,
-        y: e.clientY - position.y
-      });
+    if (scaleRef.current > 1) {
+      isDraggingRef.current = true;
+      dragStartRef.current = {
+        x: e.clientX - positionRef.current.x,
+        y: e.clientY - positionRef.current.y
+      };
     }
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging && scale > 1) {
-      setPosition({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
-      });
+    if (isDraggingRef.current && scaleRef.current > 1) {
+      positionRef.current = {
+        x: e.clientX - dragStartRef.current.x,
+        y: e.clientY - dragStartRef.current.y
+      };
+      scheduleUpdate();
     }
   };
 
   const handleMouseUp = () => {
-    setIsDragging(false);
-    setIsInteracting(false);
+    isDraggingRef.current = false;
   };
 
-  const getTouchDistance = (touches: React.TouchList) => {
+  const getTouchDistance = (touches: TouchList) => {
     const dx = touches[0].clientX - touches[1].clientX;
     const dy = touches[0].clientY - touches[1].clientY;
     return Math.sqrt(dx * dx + dy * dy);
   };
 
-  const getTouchCenter = (touches: React.TouchList) => {
+  const getTouchCenter = (touches: TouchList) => {
     return {
       x: (touches[0].clientX + touches[1].clientX) / 2,
       y: (touches[0].clientY + touches[1].clientY) / 2
@@ -132,82 +165,81 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
       e.preventDefault();
-      setIsInteracting(true);
       const distance = getTouchDistance(e.touches);
       const center = getTouchCenter(e.touches);
-      setInitialPinchDistance(distance);
-      setInitialScale(scale);
-      setPinchCenter(center);
-      setInitialPosition(position);
-    } else if (e.touches.length === 1 && scale > 1) {
-      setIsInteracting(true);
-      setTouchStart({
-        x: e.touches[0].clientX - position.x,
-        y: e.touches[0].clientY - position.y
-      });
+      initialPinchDistanceRef.current = distance;
+      initialScaleRef.current = scaleRef.current;
+      pinchCenterRef.current = center;
+      initialPositionRef.current = { ...positionRef.current };
+    } else if (e.touches.length === 1 && scaleRef.current > 1) {
+      touchStartRef.current = {
+        x: e.touches[0].clientX - positionRef.current.x,
+        y: e.touches[0].clientY - positionRef.current.y
+      };
     } else if (e.touches.length === 1) {
-      setTouchStart({
+      touchStartRef.current = {
         x: e.touches[0].clientX,
         y: e.touches[0].clientY
-      });
+      };
     }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2 && initialPinchDistance && pinchCenter) {
+    if (e.touches.length === 2 && initialPinchDistanceRef.current && pinchCenterRef.current) {
       e.preventDefault();
       const currentDistance = getTouchDistance(e.touches);
       const currentCenter = getTouchCenter(e.touches);
-      const scaleChange = currentDistance / initialPinchDistance;
-      const newScale = Math.min(Math.max(initialScale * scaleChange, 0.5), 4);
+      const scaleChange = currentDistance / initialPinchDistanceRef.current;
+      const newScale = Math.min(Math.max(initialScaleRef.current * scaleChange, 0.5), 4);
 
-      const centerDeltaX = currentCenter.x - pinchCenter.x;
-      const centerDeltaY = currentCenter.y - pinchCenter.y;
+      const centerDeltaX = currentCenter.x - pinchCenterRef.current.x;
+      const centerDeltaY = currentCenter.y - pinchCenterRef.current.y;
 
-      const newPosition = {
-        x: initialPosition.x + centerDeltaX,
-        y: initialPosition.y + centerDeltaY
+      scaleRef.current = newScale;
+      positionRef.current = {
+        x: initialPositionRef.current.x + centerDeltaX,
+        y: initialPositionRef.current.y + centerDeltaY
       };
 
-      setScale(newScale);
-      setPosition(newPosition);
-    } else if (e.touches.length === 1 && touchStart && scale > 1) {
+      setDisplayScale(newScale);
+      scheduleUpdate();
+    } else if (e.touches.length === 1 && touchStartRef.current && scaleRef.current > 1) {
       e.preventDefault();
-      setPosition({
-        x: e.touches[0].clientX - touchStart.x,
-        y: e.touches[0].clientY - touchStart.y
-      });
+      positionRef.current = {
+        x: e.touches[0].clientX - touchStartRef.current.x,
+        y: e.touches[0].clientY - touchStartRef.current.y
+      };
+      scheduleUpdate();
     }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (e.touches.length === 0) {
-      setInitialPinchDistance(null);
-      setPinchCenter(null);
-      setTouchStart(null);
-      setIsInteracting(false);
+      initialPinchDistanceRef.current = null;
+      pinchCenterRef.current = null;
+      touchStartRef.current = null;
     } else if (e.touches.length === 1) {
-      setInitialPinchDistance(null);
-      setPinchCenter(null);
-      if (scale > 1) {
-        setTouchStart({
-          x: e.touches[0].clientX - position.x,
-          y: e.touches[0].clientY - position.y
-        });
+      initialPinchDistanceRef.current = null;
+      pinchCenterRef.current = null;
+      if (scaleRef.current > 1) {
+        touchStartRef.current = {
+          x: e.touches[0].clientX - positionRef.current.x,
+          y: e.touches[0].clientY - positionRef.current.y
+        };
       }
     }
   };
 
   const handleSwipe = (e: React.TouchEvent) => {
-    if (!touchStart || scale > 1) return;
+    if (!touchStartRef.current || scaleRef.current > 1) return;
 
     const touchEnd = {
       x: e.changedTouches[0].clientX,
       y: e.changedTouches[0].clientY
     };
 
-    const deltaX = touchEnd.x - touchStart.x;
-    const deltaY = Math.abs(touchEnd.y - touchStart.y);
+    const deltaX = touchEnd.x - touchStartRef.current.x;
+    const deltaY = Math.abs(touchEnd.y - touchStartRef.current.y);
 
     if (Math.abs(deltaX) > 50 && deltaY < 50) {
       if (deltaX > 0) {
@@ -217,7 +249,7 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
       }
     }
 
-    setTouchStart(null);
+    touchStartRef.current = null;
   };
 
   if (!isOpen) return null;
@@ -247,7 +279,7 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
           <ZoomOut className="h-5 w-5 text-white" />
         </button>
         <span className="text-white text-sm font-medium min-w-[60px] text-center">
-          {Math.round(scale * 100)}%
+          {Math.round(displayScale * 100)}%
         </span>
         <button
           onClick={(e) => {
@@ -303,8 +335,8 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
       )}
 
       <div
-        ref={imageRef}
-        className={`relative max-w-[90vw] max-h-[90vh] ${scale > 1 ? 'cursor-move' : 'cursor-zoom-in'} touch-none`}
+        ref={containerRef}
+        className={`relative max-w-[90vw] max-h-[90vh] ${scaleRef.current > 1 ? 'cursor-move' : 'cursor-zoom-in'} touch-none`}
         onClick={(e) => e.stopPropagation()}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -318,18 +350,15 @@ const ImageZoomModal: React.FC<ImageZoomModalProps> = ({ isOpen, onClose, images
         }}
       >
         <img
+          ref={imageRef}
           src={images[currentIndex]}
           alt={`Highlight ${currentIndex + 1}`}
           className="max-w-full max-h-[90vh] object-contain select-none"
           style={{
-            transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
             transformOrigin: 'center center',
-            transition: isInteracting ? 'none' : 'transform 0.1s ease-out',
             willChange: 'transform',
             backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
-            perspective: 1000,
-            WebkitPerspective: 1000
+            WebkitBackfaceVisibility: 'hidden'
           }}
           draggable={false}
         />
