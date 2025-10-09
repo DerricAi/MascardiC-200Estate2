@@ -208,17 +208,10 @@ const ContactModal: React.FC<ContactModalProps> = ({
             </select>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-all duration-200"
-            >
-              Cancel
-            </button>
+          <div className="flex pt-4">
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-black font-semibold rounded-lg transition-all duration-200 transform hover:scale-105"
+              className="w-full px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-black font-semibold rounded-lg transition-all duration-200 transform hover:scale-105"
             >
               Book My Test Drive
             </button>
